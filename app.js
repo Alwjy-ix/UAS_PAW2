@@ -35,9 +35,9 @@ app.get('/', (req, res) => {
   res.json({ message: 'API Jasa Print berjalan' });
 });
 
-app.use('/api/auth', authRoutes);
-app.use('/api/layanan-print', layananPrintRoute);
-app.use('/api/pesanan-print', pesananPrintRoute);
+app.use('/auth', authRoutes);
+app.use('/layanan-print', layananPrintRoute);
+app.use('/pesanan-print', pesananPrintRoute);
 
 // Urutan penting: 404 dulu, penangkap galat paling akhir
 app.use(notFoundHandler);
@@ -47,7 +47,7 @@ mongoose
   .connect(process.env.DB_URI)
   .then(() => {
     console.log('Terhubung ke MongoDB');
-    app.listen(PORT, () => console.log(`Server berjalan di port ${PORT}`));
+    app.listen(PORT, () => console.log(`Server berjalan di http://localhost:${PORT}`));
   })
   .catch((err) => {
     console.error('Gagal terhubung ke MongoDB:', err.message);
