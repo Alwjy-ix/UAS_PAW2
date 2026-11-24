@@ -13,6 +13,23 @@ function errorHandler(err, req, res, next) {
     return res.status(400).json({ message: 'Format JSON tidak valid' });
   }
 
+  // Galat validasi Mongoose (field wajib kosong, enum salah, dst.)
+  if (err.name === 'ValidationError') {
+    const pesan = Object.values(err.errors).map((e) => e.message).join('; ');
+    return res.status(400).json({ message: pesan });
+  }
+
+  // ObjectId tidak valid, misalnya GET /api/pesanan-print/abc
+  if (err.name === 'CastError') {
+    return res.status(400).json({ message: `Nilai '${err.value}' tidak valid untuk field ${err.path}` });
+  }
+
+  // Nilai unik sudah dipakai
+  if (err.code === 11000) {
+    const field = Object.keys(err.keyPattern || {})[0] || 'data';
+    return res.status(409).json({ message: `${field} sudah dipakai` });
+  }
+
   const status = err.status || 500;
 
   if (status === 500) {
